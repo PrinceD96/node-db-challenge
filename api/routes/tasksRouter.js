@@ -17,7 +17,13 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", validateId(db, "tasks"), (req, res) => {
-	res.status(200).json(req.response);
+	const { id } = req.params;
+
+	Tasks.findById(id)
+		.then(task => res.status(200).json(task))
+		.catch(error =>
+			res.status(500).json({ error: `Failed to get task with id ${id}`, error })
+		);
 });
 
 router.post("/", validateTask, (req, res) => {
