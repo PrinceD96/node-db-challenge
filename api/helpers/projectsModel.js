@@ -12,8 +12,8 @@ const findResourcesByProjectId = projectId => {
 	return db
 		.select("r.id", "r.resource_name", "r.resource_description")
 		.from("resources as r")
-		.where({ project_id: projectId })
-		.innerJoin("projects_resources as pr", "r.resource_id", "pr.project_id");
+		.innerJoin("projects_resources as pr", "r.id", "pr.resource_id")
+		.where({ "pr.project_id": projectId });
 };
 
 const findTasksByProjectId = projectId => {

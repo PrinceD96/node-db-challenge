@@ -17,44 +17,39 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", validateId(db, "projects"), (req, res) => {
-	// res.status(200).json(req.response);
 	const { id } = req.params;
 
-	Projects.findResourcesByProjectId(id).then(resources =>
-		res.status(200).json(resources)
-	);
-
-	// Projects.findById(id)
-	// 	.then(project => {
-	// 		Projects.findTasksByProjectId(id)
-	// 			.then(tasks => {
-	// 				Projects.findResourcesByProjectId(id)
-	// 					.then(resources => {
-	// 						resources
-	// 							? res.status(200).json({ ...project, tasks, resources })
-	// 							: res
-	// 									.status(400)
-	// 									.json({ error: "No resources found for this project" });
-	// 					})
-	// 					.catch(error =>
-	// 						res.status(500).json({
-	// 							error: `Failed to get resources for project with id ${id}`,
-	// 							error
-	// 						})
-	// 					);
-	// 			})
-	// 			.catch(error =>
-	// 				res.status(500).json({
-	// 					error: `Failed to get tasks for project with id ${id}`,
-	// 					error
-	// 				})
-	// 			);
-	// 	})
-	// 	.catch(error =>
-	// 		res
-	// 			.status(500)
-	// 			.json({ error: `Failed to get project with id ${id}`, error })
-	// 	);
+	Projects.findById(id)
+		.then(project => {
+			Projects.findTasksByProjectId(id)
+				.then(tasks => {
+					Projects.findResourcesByProjectId(id)
+						.then(resources => {
+							resources
+								? res.status(200).json({ ...project, tasks, resources })
+								: res
+										.status(400)
+										.json({ error: "No resources found for this project" });
+						})
+						.catch(error =>
+							res.status(500).json({
+								error: `Failed to get resources for project with id ${id}`,
+								error
+							})
+						);
+				})
+				.catch(error =>
+					res.status(500).json({
+						error: `Failed to get tasks for project with id ${id}`,
+						error
+					})
+				);
+		})
+		.catch(error =>
+			res
+				.status(500)
+				.json({ error: `Failed to get project with id ${id}`, error })
+		);
 });
 
 router.post("/", validateProject, (req, res) => {
